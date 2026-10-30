@@ -1,0 +1,196 @@
+{
+  "group": "summary",
+  "note": "Краткое содержание одного документа. Проверяем гигиену формулировок и то, что ключевые реквизиты не потеряны и не выдуманы.",
+  "cases": [
+    {
+      "id": "sm-001",
+      "query": "Сделай краткое содержание документа",
+      "documents": [
+        "dkp_kvartira.txt"
+      ],
+      "expect_intent": "summarize",
+      "expect_attached": 1,
+      "checks": {
+        "no_conflicting_dates": true,
+        "no_invented_dates": true,
+        "must_contain_any": [
+          [
+            "14 500 000",
+            "14500000",
+            "14,5 млн"
+          ],
+          [
+            "15.06.2026",
+            "15 июня 2026"
+          ]
+        ],
+        "max_chars": 12000
+      }
+    },
+    {
+      "id": "sm-002",
+      "query": "Сделай краткое содержание документа",
+      "documents": [
+        "egrn_uchastok.txt"
+      ],
+      "expect_intent": "summarize",
+      "expect_attached": 1,
+      "note": "Обременения — главное в выписке; саммари без них бесполезно.",
+      "checks": {
+        "no_conflicting_dates": true,
+        "no_invented_dates": true,
+        "must_contain_any": [
+          [
+            "50:20:0030204:312"
+          ],
+          [
+            "ипотек",
+            "залог"
+          ],
+          [
+            "запрет",
+            "запрещение"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "sm-003",
+      "query": "Сделай краткое содержание документа",
+      "documents": [
+        "ndfl2.txt"
+      ],
+      "expect_intent": "summarize",
+      "expect_attached": 1,
+      "checks": {
+        "no_invented_dates": true,
+        "must_contain_any": [
+          [
+            "1 842 000",
+            "1842000"
+          ],
+          [
+            "217 620",
+            "217620"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "sm-004",
+      "query": "Сделай краткое содержание документа",
+      "documents": [
+        "doverennost.txt"
+      ],
+      "expect_intent": "summarize",
+      "expect_attached": 1,
+      "note": "Ограничение полномочий — то, ради чего доверенность читают.",
+      "checks": {
+        "no_invented_dates": true,
+        "must_contain_any": [
+          [
+            "не вправе",
+            "не предоставля",
+            "ограничен",
+            "без права распоряж"
+          ],
+          [
+            "19.05.2027",
+            "один год",
+            "года"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "sm-005",
+      "query": "О чём этот документ?",
+      "documents": [
+        "egrn_uchastok_izhs.txt"
+      ],
+      "expect_intent": "summarize",
+      "expect_attached": 1,
+      "checks": {
+        "must_contain_any": [
+          [
+            "ИЖС",
+            "индивидуальн"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "sm-006",
+      "query": "Сделай краткое содержание документа",
+      "documents": [
+        "dkp_kvartira.txt"
+      ],
+      "expect_intent": "summarize",
+      "expect_attached": 1,
+      "note": "Профильный чеклист трудового кодекса в промпте саммари не должен вылезать на ДКП.",
+      "checks": {
+        "must_not_contain": [
+          "МЗП",
+          "ЧАЭС",
+          "несовершеннолетн",
+          "охран",
+          "депортац"
+        ]
+      }
+    },
+    {
+      "id": "sm-007",
+      "query": "Сделай краткое содержание документа",
+      "documents": [
+        "dkp_kvartira.txt"
+      ],
+      "expect_intent": "summarize",
+      "expect_attached": 1,
+      "note": "Жалоба заказчика: сроки дублируются и не привязаны к дате заключения.",
+      "checks": {
+        "no_conflicting_dates": true,
+        "must_contain_any": [
+          [
+            "10 (десяти)",
+            "10 календарн",
+            "десяти календарн",
+            "10 дней"
+          ],
+          [
+            "30 (тридцати)",
+            "30 календарн",
+            "тридцати календарн",
+            "30 дней"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "sm-008",
+      "query": "Сделай краткое содержание документа",
+      "documents": [
+        "dkp_kvartira.txt"
+      ],
+      "expect_intent": "summarize",
+      "expect_attached": 1,
+      "note": "Заказчик просил показывать срок относительно заключения. Сроки в ДКП заданы событиями, календарных дат для них в документе нет — значит их нельзя ни выдумать, ни потерять привязку.",
+      "checks": {
+        "no_invented_dates": true,
+        "no_conflicting_dates": true,
+        "must_contain_any": [
+          [
+            "с даты государственной регистрации",
+            "с даты регистрации",
+            "после государственной регистрации",
+            "с момента государственной регистрации"
+          ],
+          [
+            "с даты подписания",
+            "с момента подписания",
+            "со дня подписания"
+          ]
+        ]
+      }
+    }
+  ]
+}

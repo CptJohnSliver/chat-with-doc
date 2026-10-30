@@ -1,0 +1,8 @@
+[default]
+
+ROUTER_AI_BASE_URL = "https://routerai.ru/api/v1"
+
+[default.mcp]
+[default.mcp.urls]
+consultant = "consultant/mcp"
+kb = "kb_searcher/mcp"

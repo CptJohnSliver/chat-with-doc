@@ -1,0 +1,234 @@
+variables:
+  REPO_NAME: "backend/chat-with-documents"
+  BUILD_IMAGE: cr.yandex/crpel251bjgcjbhtu439/infrastructure/executor:v1.23.2-debug
+  DEPLOY_IMAGE: cr.yandex/crpel251bjgcjbhtu439/infrastructure/helm:3.17.1
+  BASE_URL: dv.gigalegal.tech
+  NAMESPACE: "chat-with-documents"
+  INSTANCE_NAME: "${CI_COMMIT_REF_SLUG}-${CI_PROJECT_NAME}"
+#  GIT_SUBMODULE_STRATEGY: recursive
+#  GIT_SUBMODULE_UPDATE_FLAGS: --remote --merge
+
+stages:
+  - lint
+  - valid
+  - build
+  - deploy
+  - remove
+
+.build:
+  stage: build
+  image: $BUILD_IMAGE
+  before_script:
+    - mkdir -p /kaniko/.docker
+    - echo ${DOCKER_AUTH} | base64 -d > /kaniko/.docker/config.json
+    - DOCKER_IMAGE_NAME="${REPO_NAME}"
+    - DATE_CREATED=$(date +%Y%m%d)
+    - TAG="$CI_COMMIT_SHORT_SHA"_"${CI_COMMIT_REF_SLUG}"_"$DATE_CREATED"
+    - DOCKER_IMAGE_FULL_NAME="/$DOCKER_IMAGE_NAME":"$TAG"
+    - echo "${SERVICE_NAME}_DOCKER_IMAGE_FULL_NAME=${DOCKER_IMAGE_FULL_NAME}" >> build-$SERVICE_NAME.env
+    - echo "COMMIT_BRANCH=${CI_COMMIT_REF_SLUG}" >> build-$SERVICE_NAME.env
+    - echo "TAG=${TAG}" >> build-$SERVICE_NAME.env
+  script:
+    - |
+      DESTINATIONS="--destination $L3M_YC_REGISTRY$DOCKER_IMAGE_FULL_NAME"
+      if [[ "$CI_COMMIT_BRANCH" == "$CI_DEFAULT_BRANCH" ]]; then
+      DESTINATIONS="$DESTINATIONS
+      --destination $L3M_YC_REGISTRY/$DOCKER_IMAGE_NAME:latest"
+      fi
+    - time /kaniko/executor
+      --context ${CI_PROJECT_DIR}
+      --dockerfile "./ci_cd/docker/${SERVICE_NAME}.Dockerfile"
+      --build-arg GITLAB_TOKEN="${RO_GITLAB_TOKEN}"
+      $DESTINATIONS
+      --cache=true
+      --cache-repo="${L3M_YC_REGISTRY}/backend/chat-with-documents/cache"
+      --cache-ttl=72h
+  artifacts:
+    reports:
+      dotenv: build-$SERVICE_NAME.env
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: on_success
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: manual
+    - when: never
+
+
+.deploy:
+  image:
+    name: ${DEPLOY_IMAGE}
+    entrypoint: [""]
+  stage: deploy
+  variables:
+    NAMESPACE: "chat-with-documents"
+    KUBE_CONFIG: ${L3M_YC_KUBECONFIG}
+    HELM_VALUES: "ci_cd/values.yaml"
+    INGRESS_HOST: "${INSTANCE_NAME}.${BASE_URL}"
+    INGRESS_CERT: "dv-gigalegal-tech"
+  needs:
+    - build
+  script:
+    - helm repo add ${CI_PROJECT_NAME} --username gitlab-ci-token --password $CI_JOB_TOKEN "${CI_API_V4_URL}/projects/224/packages/helm/stable"
+    - echo $NAMESPACE
+    - echo ${INSTANCE_NAME}
+    - echo ${INGRESS_HOST}
+    - echo ${TAG}
+    - helm upgrade --install --namespace "${NAMESPACE}" ${INSTANCE_NAME} ${CI_PROJECT_NAME}/helm-general
+      --kubeconfig ${KUBE_CONFIG}
+      --values ${HELM_VALUES}
+      --set image.repository=${L3M_YC_REGISTRY}/${REPO_NAME}
+      --set image.tag=${TAG}
+      --set ingress.hosts[0].host=${INGRESS_HOST}
+      --set ingress.hosts[0].paths[0].path="/"
+      --set ingress.hosts[0].paths[0].pathType="Prefix"
+      --set ingress.tls[0].hosts={${INGRESS_HOST}}
+      --set ingress.tls[0].secretName=${INGRESS_CERT}
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: on_success
+      variables:
+        INSTANCE_NAME: "main-chat-with-documents"
+        INGRESS_HOST: "chat-with-documents.dv.gigalegal.tech"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: on_success
+    - when: never
+
+.remove:
+  stage: remove
+  image:
+    name: ${DEPLOY_IMAGE}
+    entrypoint: [""]
+  script:
+    - helm uninstall --namespace "${NAMESPACE}" ${INSTANCE_NAME}
+      --kubeconfig ${L3M_YC_KUBECONFIG}
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: manual
+    - when: never
+
+build:
+  extends:
+    - .build
+  variables:
+    SERVICE_NAME: chat_with_documents
+
+agent:install:
+  variables:
+    SERVICE_NAME: chat_with_documents
+  extends:
+    - .deploy
+
+agent:install:beta:
+  extends:
+    - .deploy
+  variables:
+    INSTANCE_NAME: "rc-chat-with-documents"
+    INGRESS_HOST: "chat-with-documents.gigalegal.ru"
+    INGRESS_CERT: "gigalegal-ru"
+    HELM_VALUES: "ci_cd/values-beta.yaml"
+    KUBE_CONFIG: ${PROD_YC_KUBECONFIG}
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: manual
+  needs:
+    - build
+    - agent:install
+
+agent:uninstall:
+  extends:
+    - .remove
+  needs:
+    - agent:install
+
+precommit:
+  stage: lint
+  image: cr.yandex/crpel251bjgcjbhtu439/infrastruction/python:3.13-slim
+  allow_failure: true
+  variables:
+    PRE_COMMIT_HOME: "$CI_PROJECT_DIR/.cache/pre-commit"
+    PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+  cache:
+    key: precommit
+    paths:
+      - .cache/pre-commit
+      - .cache/pip
+  before_script:
+    - apt-get update && apt-get install -y --no-install-recommends git && rm -rf /var/lib/apt/lists/*
+    - python -V
+    - pip install -U pip pre-commit
+  script:
+    - pre-commit run --all-files --show-diff-on-failure
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: on_success
+    - when: never
+
+gazprom:
+  tags:
+    - gazprom
+  stage: deploy
+  image:
+    name: ${DEPLOY_IMAGE}
+    entrypoint: ['']
+  variables:
+    HELM_VALUES: "ci_cd/values-gazprom.yaml"
+    KUBE_CONFIG: ${GAZPROM_YC_KUBECONFIG}
+    INGRESS_HOST: "chat-with-documents.gpn.gigalegal.tech"
+    TAG: $CI_COMMIT_SHORT_SHA_$CI_COMMIT_REF_SLUG_$DATE_CREATED
+  script:
+    - helm repo add ${CI_PROJECT_NAME} --username gitlab-ci-token --password $CI_JOB_TOKEN "${CI_API_V4_URL}/projects/224/packages/helm/stable"
+    - echo $NAMESPACE
+    - echo ${INSTANCE_NAME}
+    - echo ${INGRESS_HOST}
+    - echo ${TAG}
+    - helm upgrade --install --create-namespace --namespace "${NAMESPACE}" ${INSTANCE_NAME} ${CI_PROJECT_NAME}/helm-general
+      --kubeconfig ${KUBE_CONFIG}
+      --set image.repository=${L3M_YC_REGISTRY}/${REPO_NAME}
+      --set image.tag=${TAG}
+      --set ingress.hosts[0].paths[0].path=/
+      --set ingress.hosts[0].paths[0].pathType="Prefix"
+      --set ingress.hosts[0].host=${INGRESS_HOST}
+      --set ingress.tls[0].hosts={${INGRESS_HOST}}
+      --set ingress.tls[0].secretName=gpn-gigalegal-tech
+      --set imagePullSecrets[0].name=yandex-registry-secret
+      --values ${HELM_VALUES}
+  extends:
+    - .build
+    - .deploy
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: manual
+    - when: never
+
+valid:
+  tags:
+    - gazprom
+  stage: valid
+  image:
+    name: ${DEPLOY_IMAGE}
+    entrypoint: ['']
+  variables:
+    HELM_VALUES: "ci_cd/values-gazprom.yaml"
+    KUBE_CONFIG: ${GAZPROM_YC_KUBECONFIG}
+    INGRESS_HOST: "chat-with-documents.gpn.gigalegal.tech"
+    TAG: $CI_COMMIT_SHORT_SHA_$CI_COMMIT_REF_SLUG_$DATE_CREATED
+  script:
+    - helm repo add ${CI_PROJECT_NAME} --username gitlab-ci-token --password $CI_JOB_TOKEN "${CI_API_V4_URL}/projects/224/packages/helm/stable"
+    - echo ${NAMESPACE}
+    - echo ${INSTANCE_NAME}
+    - echo ${INGRESS_HOST}
+    - echo $TAG
+    - helm upgrade --install --create-namespace --namespace "${NAMESPACE}" ${INSTANCE_NAME} ${CI_PROJECT_NAME}/helm-general
+      --kubeconfig ${KUBE_CONFIG}
+      --set ingress.hosts[0].paths[0].path=/
+      --set ingress.hosts[0].paths[0].pathType="Prefix"
+      --set ingress.hosts[0].host=${INGRESS_HOST}
+      --set ingress.tls[0].hosts={${INGRESS_HOST}}
+      --set ingress.tls[0].secretName=gpn-gigalegal-tech
+      --set imagePullSecrets[0].name=yandex-registry-secret
+      --values ${HELM_VALUES}
+      --dry-run=client
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: on_success
+    - when: never

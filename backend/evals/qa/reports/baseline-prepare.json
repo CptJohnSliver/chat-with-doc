@@ -1,0 +1,784 @@
+[
+ {
+  "id": "an-001",
+  "group": "anonymization",
+  "query": "Упоминается ли в договоре Карабеков Расим Мирзеханович?",
+  "documents": [
+   "dkp_kvartira.txt"
+  ],
+  "attached_count": 1,
+  "intent": "",
+  "ok": true,
+  "error": "",
+  "checks": [
+   {
+    "check": "expect_attached",
+    "ok": true,
+    "detail": "до графа доехало 1 документов, ожидалось 1"
+   }
+  ],
+  "failed": [],
+  "answer": "",
+  "latency_s": 1.18
+ },
+ {
+  "id": "an-002",
+  "group": "anonymization",
+  "query": "Кто продавец по договору — Карабеков Расим Мирзеханович?",
+  "documents": [
+   "dkp_kvartira.txt"
+  ],
+  "attached_count": 1,
+  "intent": "",
+  "ok": true,
+  "error": "",
+  "checks": [
+   {
+    "check": "expect_attached",
+    "ok": true,
+    "detail": "до графа доехало 1 документов, ожидалось 1"
+   }
+  ],
+  "failed": [],
+  "answer": "",
+  "latency_s": 0.0
+ },
+ {
+  "id": "an-003",
+  "group": "anonymization",
+  "query": "Проверь, кто указан продавцом и покупателем",
+  "documents": [
+   "dkp_kvartira.txt"
+  ],
+  "attached_count": 1,
+  "intent": "",
+  "ok": true,
+  "error": "",
+  "checks": [
+   {
+    "check": "expect_attached",
+    "ok": true,
+    "detail": "до графа доехало 1 документов, ожидалось 1"
+   }
+  ],
+  "failed": [],
+  "answer": "",
+  "latency_s": 0.0
+ },
+ {
+  "id": "an-004",
+  "group": "anonymization",
+  "query": "На кого выдана доверенность — на Иванова Сергея Петровича?",
+  "documents": [
+   "doverennost.txt"
+  ],
+  "attached_count": 1,
+  "intent": "",
+  "ok": true,
+  "error": "",
+  "checks": [
+   {
+    "check": "expect_attached",
+    "ok": true,
+    "detail": "до графа доехало 1 документов, ожидалось 1"
+   }
+  ],
+  "failed": [],
+  "answer": "",
+  "latency_s": 0.0
+ },
+ {
+  "id": "an-005",
+  "group": "anonymization",
+  "query": "По какому адресу находится квартира?",
+  "documents": [
+   "dkp_kvartira.txt"
+  ],
+  "attached_count": 1,
+  "intent": "",
+  "ok": true,
+  "error": "",
+  "checks": [
+   {
+    "check": "expect_attached",
+    "ok": true,
+    "detail": "до графа доехало 1 документов, ожидалось 1"
+   }
+  ],
+  "failed": [],
+  "answer": "",
+  "latency_s": 0.0
+ },
+ {
+  "id": "an-006",
+  "group": "anonymization",
+  "query": "Кто налоговый агент по справке?",
+  "documents": [
+   "ndfl2.txt"
+  ],
+  "attached_count": 1,
+  "intent": "",
+  "ok": true,
+  "error": "",
+  "checks": [
+   {
+    "check": "expect_attached",
+    "ok": true,
+    "detail": "до графа доехало 1 документов, ожидалось 1"
+   }
+  ],
+  "failed": [],
+  "answer": "",
+  "latency_s": 0.0
+ },
+ {
+  "id": "ho-001",
+  "group": "honesty",
+  "query": "Могу ли я подписать этот договор по доверенности, которую мне выдали?",
+  "documents": [
+   "dkp_kvartira.txt"
+  ],
+  "attached_count": 1,
+  "intent": "",
+  "ok": true,
+  "error": "",
+  "checks": [
+   {
+    "check": "expect_attached",
+    "ok": true,
+    "detail": "до графа доехало 1 документов, ожидалось 1"
+   }
+  ],
+  "failed": [],
+  "answer": "",
+  "latency_s": 0.0
+ },
+ {
+  "id": "ho-002",
+  "group": "honesty",
+  "query": "Соответствует ли объект в договоре тому, что записано в ЕГРН?",
+  "documents": [
+   "dkp_kvartira.txt"
+  ],
+  "attached_count": 1,
+  "intent": "",
+  "ok": true,
+  "error": "",
+  "checks": [
+   {
+    "check": "expect_attached",
+    "ok": true,
+    "detail": "до графа доехало 1 документов, ожидалось 1"
+   }
+  ],
+  "failed": [],
+  "answer": "",
+  "latency_s": 0.0
+ },
+ {
+  "id": "ho-003",
+  "group": "honesty",
+  "query": "Есть ли у продавца долги по коммунальным платежам?",
+  "documents": [
+   "dkp_kvartira.txt"
+  ],
+  "attached_count": 1,
+  "intent": "",
+  "ok": true,
+  "error": "",
+  "checks": [
+   {
+    "check": "expect_attached",
+    "ok": true,
+    "detail": "до графа доехало 1 документов, ожидалось 1"
+   }
+  ],
+  "failed": [],
+  "answer": "",
+  "latency_s": 0.0
+ },
+ {
+  "id": "ho-004",
+  "group": "honesty",
+  "query": "Проверь, действительна ли доверенность на сегодня и не отменена ли она",
+  "documents": [
+   "doverennost.txt"
+  ],
+  "attached_count": 1,
+  "intent": "",
+  "ok": true,
+  "error": "",
+  "checks": [
+   {
+    "check": "expect_attached",
+    "ok": true,
+    "detail": "до графа доехало 1 документов, ожидалось 1"
+   }
+  ],
+  "failed": [],
+  "answer": "",
+  "latency_s": 0.0
+ },
+ {
+  "id": "ho-005",
+  "group": "honesty",
+  "query": "Какая рыночная стоимость квартиры?",
+  "documents": [
+   "dkp_kvartira.txt"
+  ],
+  "attached_count": 1,
+  "intent": "",
+  "ok": true,
+  "error": "",
+  "checks": [
+   {
+    "check": "expect_attached",
+    "ok": true,
+    "detail": "до графа доехало 1 документов, ожидалось 1"
+   }
+  ],
+  "failed": [],
+  "answer": "",
+  "latency_s": 0.0
+ },
+ {
+  "id": "ho-006",
+  "group": "honesty",
+  "query": "Сколько лет продавец владел квартирой и попадает ли он под освобождение от НДФЛ?",
+  "documents": [
+   "dkp_kvartira.txt"
+  ],
+  "attached_count": 1,
+  "intent": "",
+  "ok": true,
+  "error": "",
+  "checks": [
+   {
+    "check": "expect_attached",
+    "ok": true,
+    "detail": "до графа доехало 1 документов, ожидалось 1"
+   }
+  ],
+  "failed": [],
+  "answer": "",
+  "latency_s": 0.0
+ },
+ {
+  "id": "md-001",
+  "group": "multi_doc",
+  "query": "Сделай краткое содержание каждого документа",
+  "documents": [
+   "dkp_kvartira.txt",
+   "egrn_uchastok.txt"
+  ],
+  "attached_count": 1,
+  "intent": "",
+  "ok": false,
+  "error": "",
+  "checks": [
+   {
+    "check": "expect_attached",
+    "ok": false,
+    "detail": "до графа доехало 1 документов, ожидалось 2"
+   }
+  ],
+  "failed": [
+   "expect_attached: до графа доехало 1 документов, ожидалось 2"
+  ],
+  "answer": "",
+  "latency_s": 0.0
+ },
+ {
+  "id": "md-002",
+  "group": "multi_doc",
+  "query": "Что из приложенного относится к участку, а что к квартире?",
+  "documents": [
+   "dkp_kvartira.txt",
+   "egrn_uchastok.txt"
+  ],
+  "attached_count": 1,
+  "intent": "",
+  "ok": false,
+  "error": "",
+  "checks": [
+   {
+    "check": "expect_attached",
+    "ok": false,
+    "detail": "до графа доехало 1 документов, ожидалось 2"
+   }
+  ],
+  "failed": [
+   "expect_attached: до графа доехало 1 документов, ожидалось 2"
+  ],
+  "answer": "",
+  "latency_s": 0.0
+ },
+ {
+  "id": "md-003",
+  "group": "multi_doc",
+  "query": "Совпадает ли кадастровый номер в договоре с номером в выписке?",
+  "documents": [
+   "dkp_kvartira.txt",
+   "egrn_uchastok.txt"
+  ],
+  "attached_count": 1,
+  "intent": "",
+  "ok": false,
+  "error": "",
+  "checks": [
+   {
+    "check": "expect_attached",
+    "ok": false,
+    "detail": "до графа доехало 1 документов, ожидалось 2"
+   }
+  ],
+  "failed": [
+   "expect_attached: до графа доехало 1 документов, ожидалось 2"
+  ],
+  "answer": "",
+  "latency_s": 0.0
+ },
+ {
+  "id": "md-004",
+  "group": "multi_doc",
+  "query": "А теперь посмотри доверенность: она даёт право подписать этот договор?",
+  "documents": [
+   "doverennost.txt"
+  ],
+  "attached_count": 1,
+  "intent": "",
+  "ok": false,
+  "error": "",
+  "checks": [
+   {
+    "check": "expect_attached",
+    "ok": false,
+    "detail": "до графа доехало 1 документов, ожидалось 2"
+   }
+  ],
+  "failed": [
+   "expect_attached: до графа доехало 1 документов, ожидалось 2"
+  ],
+  "answer": "",
+  "latency_s": 0.0
+ },
+ {
+  "id": "md-005",
+  "group": "multi_doc",
+  "query": "Сравни цену в договоре с кадастровой стоимостью участка",
+  "documents": [
+   "dkp_kvartira.txt",
+   "egrn_uchastok_izhs.txt"
+  ],
+  "attached_count": 1,
+  "intent": "",
+  "ok": false,
+  "error": "",
+  "checks": [
+   {
+    "check": "expect_attached",
+    "ok": false,
+    "detail": "до графа доехало 1 документов, ожидалось 2"
+   }
+  ],
+  "failed": [
+   "expect_attached: до графа доехало 1 документов, ожидалось 2"
+  ],
+  "answer": "",
+  "latency_s": 0.0
+ },
+ {
+  "id": "md-006",
+  "group": "multi_doc",
+  "query": "Какая цена в договоре?",
+  "documents": [],
+  "attached_count": 1,
+  "intent": "",
+  "ok": true,
+  "error": "",
+  "checks": [
+   {
+    "check": "expect_attached",
+    "ok": true,
+    "detail": "до графа доехало 1 документов, ожидалось 1"
+   }
+  ],
+  "failed": [],
+  "answer": "",
+  "latency_s": 0.0
+ },
+ {
+  "id": "qa-001",
+  "group": "qa_fields",
+  "query": "Какая цена квартиры по договору?",
+  "documents": [
+   "dkp_kvartira.txt"
+  ],
+  "attached_count": 1,
+  "intent": "",
+  "ok": true,
+  "error": "",
+  "checks": [
+   {
+    "check": "expect_attached",
+    "ok": true,
+    "detail": "до графа доехало 1 документов, ожидалось 1"
+   }
+  ],
+  "failed": [],
+  "answer": "",
+  "latency_s": 0.0
+ },
+ {
+  "id": "qa-002",
+  "group": "qa_fields",
+  "query": "В какой срок продавец обязан сняться с регистрационного учёта?",
+  "documents": [
+   "dkp_kvartira.txt"
+  ],
+  "attached_count": 1,
+  "intent": "",
+  "ok": true,
+  "error": "",
+  "checks": [
+   {
+    "check": "expect_attached",
+    "ok": true,
+    "detail": "до графа доехало 1 документов, ожидалось 1"
+   }
+  ],
+  "failed": [],
+  "answer": "",
+  "latency_s": 0.0
+ },
+ {
+  "id": "qa-003",
+  "group": "qa_fields",
+  "query": "Какая неустойка за просрочку передачи квартиры и есть ли у неё потолок?",
+  "documents": [
+   "dkp_kvartira.txt"
+  ],
+  "attached_count": 1,
+  "intent": "",
+  "ok": true,
+  "error": "",
+  "checks": [
+   {
+    "check": "expect_attached",
+    "ok": true,
+    "detail": "до графа доехало 1 документов, ожидалось 1"
+   }
+  ],
+  "failed": [],
+  "answer": "",
+  "latency_s": 0.0
+ },
+ {
+  "id": "qa-004",
+  "group": "qa_fields",
+  "query": "Какая сумма налога удержана по справке?",
+  "documents": [
+   "ndfl2.txt"
+  ],
+  "attached_count": 1,
+  "intent": "",
+  "ok": true,
+  "error": "",
+  "checks": [
+   {
+    "check": "expect_attached",
+    "ok": true,
+    "detail": "до графа доехало 1 документов, ожидалось 1"
+   }
+  ],
+  "failed": [],
+  "answer": "",
+  "latency_s": 0.0
+ },
+ {
+  "id": "qa-005",
+  "group": "qa_fields",
+  "query": "По каким кодам дохода были начисления кроме основного оклада?",
+  "documents": [
+   "ndfl2.txt"
+  ],
+  "attached_count": 1,
+  "intent": "",
+  "ok": true,
+  "error": "",
+  "checks": [
+   {
+    "check": "expect_attached",
+    "ok": true,
+    "detail": "до графа доехало 1 документов, ожидалось 1"
+   }
+  ],
+  "failed": [],
+  "answer": "",
+  "latency_s": 0.0
+ },
+ {
+  "id": "qa-006",
+  "group": "qa_fields",
+  "query": "Есть ли обременения на участке?",
+  "documents": [
+   "egrn_uchastok.txt"
+  ],
+  "attached_count": 1,
+  "intent": "",
+  "ok": true,
+  "error": "",
+  "checks": [
+   {
+    "check": "expect_attached",
+    "ok": true,
+    "detail": "до графа доехало 1 документов, ожидалось 1"
+   }
+  ],
+  "failed": [],
+  "answer": "",
+  "latency_s": 0.0
+ },
+ {
+  "id": "qa-007",
+  "group": "qa_fields",
+  "query": "Какая кадастровая стоимость участка?",
+  "documents": [
+   "egrn_uchastok_izhs.txt"
+  ],
+  "attached_count": 1,
+  "intent": "",
+  "ok": true,
+  "error": "",
+  "checks": [
+   {
+    "check": "expect_attached",
+    "ok": true,
+    "detail": "до графа доехало 1 документов, ожидалось 1"
+   }
+  ],
+  "failed": [],
+  "answer": "",
+  "latency_s": 0.0
+ },
+ {
+  "id": "qa-008",
+  "group": "qa_fields",
+  "query": "Вправе ли поверенный продать участок по этой доверенности?",
+  "documents": [
+   "doverennost.txt"
+  ],
+  "attached_count": 1,
+  "intent": "",
+  "ok": true,
+  "error": "",
+  "checks": [
+   {
+    "check": "expect_attached",
+    "ok": true,
+    "detail": "до графа доехало 1 документов, ожидалось 1"
+   }
+  ],
+  "failed": [],
+  "answer": "",
+  "latency_s": 0.0
+ },
+ {
+  "id": "qa-009",
+  "group": "qa_fields",
+  "query": "До какого числа действует доверенность?",
+  "documents": [
+   "doverennost.txt"
+  ],
+  "attached_count": 1,
+  "intent": "",
+  "ok": true,
+  "error": "",
+  "checks": [
+   {
+    "check": "expect_attached",
+    "ok": true,
+    "detail": "до графа доехало 1 документов, ожидалось 1"
+   }
+  ],
+  "failed": [],
+  "answer": "",
+  "latency_s": 0.0
+ },
+ {
+  "id": "qa-010",
+  "group": "qa_fields",
+  "query": "Когда покупатель должен открыть аккредитив?",
+  "documents": [
+   "dkp_kvartira.txt"
+  ],
+  "attached_count": 1,
+  "intent": "",
+  "ok": true,
+  "error": "",
+  "checks": [
+   {
+    "check": "expect_attached",
+    "ok": true,
+    "detail": "до графа доехало 1 документов, ожидалось 1"
+   }
+  ],
+  "failed": [],
+  "answer": "",
+  "latency_s": 0.0
+ },
+ {
+  "id": "sm-001",
+  "group": "summary",
+  "query": "Сделай краткое содержание документа",
+  "documents": [
+   "dkp_kvartira.txt"
+  ],
+  "attached_count": 1,
+  "intent": "",
+  "ok": true,
+  "error": "",
+  "checks": [
+   {
+    "check": "expect_attached",
+    "ok": true,
+    "detail": "до графа доехало 1 документов, ожидалось 1"
+   }
+  ],
+  "failed": [],
+  "answer": "",
+  "latency_s": 0.0
+ },
+ {
+  "id": "sm-002",
+  "group": "summary",
+  "query": "Сделай краткое содержание документа",
+  "documents": [
+   "egrn_uchastok.txt"
+  ],
+  "attached_count": 1,
+  "intent": "",
+  "ok": true,
+  "error": "",
+  "checks": [
+   {
+    "check": "expect_attached",
+    "ok": true,
+    "detail": "до графа доехало 1 документов, ожидалось 1"
+   }
+  ],
+  "failed": [],
+  "answer": "",
+  "latency_s": 0.0
+ },
+ {
+  "id": "sm-003",
+  "group": "summary",
+  "query": "Сделай краткое содержание документа",
+  "documents": [
+   "ndfl2.txt"
+  ],
+  "attached_count": 1,
+  "intent": "",
+  "ok": true,
+  "error": "",
+  "checks": [
+   {
+    "check": "expect_attached",
+    "ok": true,
+    "detail": "до графа доехало 1 документов, ожидалось 1"
+   }
+  ],
+  "failed": [],
+  "answer": "",
+  "latency_s": 0.0
+ },
+ {
+  "id": "sm-004",
+  "group": "summary",
+  "query": "Сделай краткое содержание документа",
+  "documents": [
+   "doverennost.txt"
+  ],
+  "attached_count": 1,
+  "intent": "",
+  "ok": true,
+  "error": "",
+  "checks": [
+   {
+    "check": "expect_attached",
+    "ok": true,
+    "detail": "до графа доехало 1 документов, ожидалось 1"
+   }
+  ],
+  "failed": [],
+  "answer": "",
+  "latency_s": 0.0
+ },
+ {
+  "id": "sm-005",
+  "group": "summary",
+  "query": "О чём этот документ?",
+  "documents": [
+   "egrn_uchastok_izhs.txt"
+  ],
+  "attached_count": 1,
+  "intent": "",
+  "ok": true,
+  "error": "",
+  "checks": [
+   {
+    "check": "expect_attached",
+    "ok": true,
+    "detail": "до графа доехало 1 документов, ожидалось 1"
+   }
+  ],
+  "failed": [],
+  "answer": "",
+  "latency_s": 0.0
+ },
+ {
+  "id": "sm-006",
+  "group": "summary",
+  "query": "Сделай краткое содержание документа",
+  "documents": [
+   "dkp_kvartira.txt"
+  ],
+  "attached_count": 1,
+  "intent": "",
+  "ok": true,
+  "error": "",
+  "checks": [
+   {
+    "check": "expect_attached",
+    "ok": true,
+    "detail": "до графа доехало 1 документов, ожидалось 1"
+   }
+  ],
+  "failed": [],
+  "answer": "",
+  "latency_s": 0.0
+ },
+ {
+  "id": "sm-007",
+  "group": "summary",
+  "query": "Сделай краткое содержание документа",
+  "documents": [
+   "dkp_kvartira.txt"
+  ],
+  "attached_count": 1,
+  "intent": "",
+  "ok": true,
+  "error": "",
+  "checks": [
+   {
+    "check": "expect_attached",
+    "ok": true,
+    "detail": "до графа доехало 1 документов, ожидалось 1"
+   }
+  ],
+  "failed": [],
+  "answer": "",
+  "latency_s": 0.0
+ }
+]

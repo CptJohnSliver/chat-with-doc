@@ -1,0 +1,173 @@
+[default]
+DEBUG_MODE = false
+SERVICE_NAME = "chat_w_doc"
+S3_SERVICE_BASE_URL = "https://s3-service.dv.gigalegal.tech/"
+
+ROUTER_AI_BASE_URL = "https://routerai.ru/api/v1"
+S3_SERVICE_META_PATH = "/api/s3-service/v1/s3/meta"
+S3_SERVICE_UPLOAD_ANONYMIZED_FILE_PATH = "/api/s3-service/v1/s3/download/{file_id}/anonymized"
+# Poll anonymized download while s3-service returns 202 (does not hold graph semaphore).
+S3_SERVICE_RETRY_ON_NOT_READY_ATTEMPTS = 5
+S3_SERVICE_RETRY_ON_NOT_READY_WAIT_MULTIPLIER = 2
+S3_SERVICE_RETRY_ON_NOT_READY_WAIT_MIN_SECONDS = 2
+S3_SERVICE_RETRY_ON_NOT_READY_WAIT_MAX_SECONDS = 30
+MAX_UPLOAD_FILE_BYTES = 52428800                    # 50 MiB
+
+[default.sse.headers]
+Cache-Control = "no-cache"
+Connection = "keep-alive"
+X-Accel-Buffering = "no"
+
+# ── Document-process runtime ─────────────────────────────────────────────────
+
+[default.document_process]
+# Сколько последних сообщений истории уходит в валидацию/контекст запроса.
+history_limit_messages = 10
+# Сколько документов всего доходит до графа. Все файлы текущего сообщения берутся
+# в любом случае; лимит режет добор из истории.
+max_attached_documents = 4
+# Сколько документов добирается из предыдущих сообщений треда. Нужен, чтобы вопрос
+# про ранее загруженный документ на него отвечал, но чтобы весь чат не тащился
+# в каждый ответ.
+history_documents_limit = 2
+# Максимальный размер окна сегментации документа (символы) для retrieve.
+segment_max_size = 5000
+# Сколько лучших чанков отдавать в ответ по документу после ранжирования.
+retrieve_top_k = 30
+# Минимум мест для самостоятельных попаданий в общем отборе; остальные доступны соседям.
+retrieve_core_top_k = 20
+# Сколько кандидатов оставлять после keyword-префильтра перед эмбеддингами
+# (только для очень больших документов, см. retrieve_full_embed_max_chars).
+retrieve_keyword_candidates = 500
+# Размер батча при запросе эмбеддингов к GigaChat.
+retrieve_embed_batch_size = 64
+# Бюджет символов на регион (начало/середина/конец) в no-hit fallback
+# для документов крупнее retrieve_full_embed_max_chars.
+retrieve_fallback_chars = 50000
+# Длина префикса документа для классификатора намерения (не весь текст).
+snippet_chars = 8000
+# Маленькие документы (символы): целиком в LLM, без retrieve/эмбедов.
+chunk_threshold = 150000
+# Средние документы (символы): RecursiveCharacterTextSplitter + embed всех чанков.
+# Выше порога — streaming-окна + keyword-префильтр (большие файлы).
+retrieve_full_embed_max_chars = 1000000
+# Порог длины для map-reduce суммаризации; короче — один проход LLM.
+summarize_map_reduce_threshold = 120000
+# Максимум промежуточных выжимок перед финалом без mid-reduce.
+# 8–10 map-окон типичны для кодексов ~400k; mid-reduce только если кусков больше.
+# Финальный join-бюджет в коде ~ max(0.75×map_reduce_threshold, 90k), чтобы
+# не резать map-выжимки до ~24k и не терять поздние темы на финале.
+summarize_map_max_chunks = 10
+# Параллельность map- и независимых mid-reduce-вызовов LLM.
+summarize_map_concurrency = 3
+# Размер окна (символы) при нарезке документа на map-фрагменты.
+summarize_map_segment_max = 50000
+# Жёсткий лимит числа map-окон. Для документа 10M и окна 50k нужно
+# до ~203 окон из-за soft-cut; 250 оставляет запас примерно 23%.
+summarize_map_max_segments = 250
+# Максимальная длина документа для суммаризации; длиннее — отказ.
+summarize_max_document_chars = 10000000
+
+# ── Document-process LLM clients (Router AI / OpenRouter-compatible) ─────────
+# Open-weight only: gpt-oss (structured), DeepSeek (map), GLM (answer/reduce).
+
+[default.document_process_llms.validation]
+# Same stack as k-agent validation (wired there as filter_llm).
+model = "openai/gpt-oss-120b"
+stream_usage = true
+temperature = 0.5
+max_tokens = 2048
+timeout = 30
+streaming = false
+max_retries = 0
+models = ["deepseek/deepseek-v4-flash"]
+
+[default.document_process_llms.validation.reasoning]
+effort = "medium"
+exclude = false
+enabled = true
+
+[default.document_process_llms.validation.provider]
+order = ["groq", "nebius"]
+sort = "throughput"
+allow_fallbacks = false
+
+[[default.document_process_llms.validation.plugins]]
+id = "response-healing"
+
+[default.document_process_llms.classifier]
+model = "openai/gpt-oss-120b"
+stream_usage = true
+temperature = 0.5
+max_tokens = 2048
+timeout = 30
+streaming = false
+max_retries = 0
+models = ["deepseek/deepseek-v4-flash"]
+
+[default.document_process_llms.classifier.reasoning]
+effort = "medium"
+exclude = false
+enabled = true
+
+[default.document_process_llms.classifier.provider]
+order = ["groq", "nebius", "baseten/fp4"]
+sort = "throughput"
+allow_fallbacks = false
+
+[[default.document_process_llms.classifier.plugins]]
+id = "response-healing"
+
+[default.document_process_llms.answer]
+model = "google/gemini-3.6-flash"
+temperature = 0.2
+top_p = 0.90
+max_tokens = 32768
+timeout = 120
+streaming = true
+max_retries = 2
+
+[default.document_process_llms.answer.reasoning]
+effort = "medium"
+exclude = true
+enabled = true
+
+[default.document_process_llms.answer.provider]
+sort = "throughput"
+
+# Final summarize: Gemini 3.5 Flash Lite (RouterAI ₽ tariff).
+[default.document_process_llms.summarize]
+model = "google/gemini-3.5-flash-lite"
+temperature = 0.2
+top_p = 0.90
+max_tokens = 32768
+timeout = 180
+streaming = true
+max_retries = 2
+
+[default.document_process_llms.summarize.reasoning]
+enabled = false
+
+[default.document_process_llms.summarize.provider]
+sort = "throughput"
+
+# Map: gpt-oss first (reasoning required by provider). Flash is fallback.
+[default.document_process_llms.summarize_map]
+model = "openai/gpt-oss-120b"
+temperature = 0.1
+top_p = 0.90
+max_tokens = 2048
+timeout = 90
+streaming = false
+max_retries = 0
+models = ["deepseek/deepseek-v4-flash"]
+
+[default.document_process_llms.summarize_map.reasoning]
+effort = "low"
+exclude = true
+enabled = true
+
+[default.document_process_llms.summarize_map.provider]
+order = ["groq", "nebius", "baseten/fp4"]
+sort = "throughput"
+allow_fallbacks = false

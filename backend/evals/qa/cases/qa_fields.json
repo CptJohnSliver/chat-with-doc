@@ -1,0 +1,116 @@
+{
+  "group": "qa_fields",
+  "note": "Вопросы про конкретное поле: сумма, срок, код, реквизит. Ответ проверяется по точному значению из документа.",
+  "cases": [
+    {
+      "id": "qa-001",
+      "query": "Какая цена квартиры по договору?",
+      "documents": ["dkp_kvartira.txt"],
+      "expect_intent": "document_qa",
+      "expect_attached": 1,
+      "checks": {
+        "must_contain_any": [["14 500 000", "14500000"]],
+        "no_invented_dates": true
+      }
+    },
+    {
+      "id": "qa-002",
+      "query": "В какой срок продавец обязан сняться с регистрационного учёта?",
+      "documents": ["dkp_kvartira.txt"],
+      "expect_intent": "document_qa",
+      "expect_attached": 1,
+      "note": "Рядом в договоре есть срок 10 дней на передачу — путать их нельзя.",
+      "checks": {
+        "must_contain_any": [["30", "тридцат"]],
+        "must_not_contain": ["10 календарных дней с даты государственной регистрации"]
+      }
+    },
+    {
+      "id": "qa-003",
+      "query": "Какая неустойка за просрочку передачи квартиры и есть ли у неё потолок?",
+      "documents": ["dkp_kvartira.txt"],
+      "expect_intent": "document_qa",
+      "expect_attached": 1,
+      "checks": {
+        "must_contain_any": [["0,1", "0.1"], ["5 %", "5%", "5 процент"]]
+      }
+    },
+    {
+      "id": "qa-004",
+      "query": "Какая сумма налога удержана по справке?",
+      "documents": ["ndfl2.txt"],
+      "expect_intent": "document_qa",
+      "expect_attached": 1,
+      "checks": {
+        "must_contain_any": [["217 620", "217620"]]
+      }
+    },
+    {
+      "id": "qa-005",
+      "query": "По каким кодам дохода были начисления кроме основного оклада?",
+      "documents": ["ndfl2.txt"],
+      "expect_intent": "document_qa",
+      "expect_attached": 1,
+      "checks": {
+        "must_contain_all": ["2002", "2012", "2760"]
+      }
+    },
+    {
+      "id": "qa-006",
+      "query": "Есть ли обременения на участке?",
+      "documents": ["egrn_uchastok.txt"],
+      "expect_intent": "document_qa",
+      "expect_attached": 1,
+      "checks": {
+        "must_contain_any": [
+          ["ипотек", "залог"],
+          ["запрет", "запрещение"]
+        ],
+        "must_contain_all": ["11.03.2039"]
+      }
+    },
+    {
+      "id": "qa-007",
+      "query": "Какая кадастровая стоимость участка?",
+      "documents": ["egrn_uchastok_izhs.txt"],
+      "expect_intent": "document_qa",
+      "expect_attached": 1,
+      "checks": {
+        "must_contain_any": [["3 000 000", "3000000", "3 млн"]]
+      }
+    },
+    {
+      "id": "qa-008",
+      "query": "Вправе ли поверенный продать участок по этой доверенности?",
+      "documents": ["doverennost.txt"],
+      "expect_intent": "document_qa",
+      "expect_attached": 1,
+      "note": "Прямой запрет в тексте. Ответ «да» — правовая ошибка.",
+      "checks": {
+        "must_contain_any": [["не вправе", "нет", "не может", "не предоставл", "не наделён", "не наделен"]],
+        "must_not_match": ["^\\s*\\*{0,2}(Прямой ответ:)?\\*{0,2}\\s*Да[,.]"]
+      }
+    },
+    {
+      "id": "qa-009",
+      "query": "До какого числа действует доверенность?",
+      "documents": ["doverennost.txt"],
+      "expect_intent": "document_qa",
+      "expect_attached": 1,
+      "checks": {
+        "must_contain_any": [["19.05.2027", "девятнадцатое мая", "19 мая 2027"]],
+        "no_invented_dates": true
+      }
+    },
+    {
+      "id": "qa-010",
+      "query": "Когда покупатель должен открыть аккредитив?",
+      "documents": ["dkp_kvartira.txt"],
+      "expect_intent": "document_qa",
+      "expect_attached": 1,
+      "checks": {
+        "must_contain_any": [["3 (трёх) рабочих", "трёх рабочих", "трех рабочих", "3 рабочих"]]
+      }
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+system-certs = true
+index-strategy = "unsafe-best-match"
+index-url = "https://token:<OSC_TOKEN>@sberosc.sigma.sbrf.ru/repo/pypi/simple"
+
+extra-index-url = [
+    "https://<NEXUS_TOKEN>@nexus-ci.delta.sbrf.ru/repository/pypi-release/simple",
+]

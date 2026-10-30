@@ -1,0 +1,46 @@
+services:
+  backend:
+    build:
+      context: ../../     # поднимем контекст до корня
+      dockerfile: ./ci_cd/docker/backend.Dockerfile
+    container_name: chat-with-documents-backend
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./.env
+    environment:
+      LOG_RENDERER: console
+      PYTHONPATH: /app/backend
+      LANGFUSE_BASE_URL: ""
+      PROJECT_NAME: "k_plus_link_agent_dev_local"
+      PROJECT_TAG: "stand_cicd"
+      PROMPTS_DIR: "'/app/backend/src/agents/prompts'"
+      LANGFUSE_ENABLED: "false"
+      LANGFUSE_TIMEOUT: "30"
+      ENV_FOR_DYNACONF: "kplus"
+      ENVVAR_PREFIX_FOR_DYNACONF: "false"
+      VAULT_ENABLED_FOR_DYNACONF: "true"
+      VAULT_URL_FOR_DYNACONF: 'https://vault-dev.gigalegal.tech'
+      VAULT_KV_VERSION_FOR_DYNACONF: "2"
+      LANGFUSE_USER_ID: "Gigant misli"
+      SETTINGS_FILES_FOR_DYNACONF: "['/app/backend/src/common/config/toml/*.toml']"
+      S3_SERVICE_BASE_URL: "https://s3-service.dv.gigalegal.tech/"
+      USE_PROXY: "false"
+      ROUTER_AI_BASE_URL: "https://routerai.ru/api/v1"
+      S3_SERVICE_META_PATH: "/s3/meta"
+      S3_SERVICE_UPLOAD_ANONYMIZED_FILE_PATH: "/s3/download/{file_id}/anonymized"
+
+
+
+    restart: unless-stopped
+
+    networks:
+      - "front_net"
+    deploy:
+      resources:
+        limits:
+          memory: 3G
+
+networks:
+  front_net:
+    external: true

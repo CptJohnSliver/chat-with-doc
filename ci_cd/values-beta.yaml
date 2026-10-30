@@ -1,0 +1,72 @@
+replicaCount: 1
+
+service:
+  type: ClusterIP
+  port: 8000
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    nginx.org/client-max-body-size: "55m"
+    nginx.org/proxy-max-temp-file-size: "55m"
+    nginx.org/server-snippets: |
+      # k8s internal
+      allow 10.130.0.0/24;
+      allow 10.10.0.0/16;
+      allow 10.30.0.0/16;
+      # k8s hosts
+      allow 51.250.42.25/32;
+      allow 130.193.57.226/32;
+      allow 130.193.58.231/32;
+      deny all;
+
+  hosts:
+    - host: chat-with-documents.dv.gigalegal.tech
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls:
+    - secretName: dv-gigalegal-tech
+      hosts:
+        - chat-with-documents.dv.gigalegal.tech
+
+ingressClassName: "nginx"
+
+env:
+
+# for tst local secret env
+#localsecret: "k-agent"
+vaultToken: "vault-token-for-dynaconf"
+
+config:
+  PYTHONPATH: /app/backend
+  LANGFUSE_BASE_URL: ""
+  PROJECT_NAME: "k_plus_link_agent_dev_local"
+  PROJECT_TAG: "stand_cicd"
+  PROMPTS_DIR: "'/app/backend/src/agents/prompts'"
+  LANGFUSE_ENABLED: "false"
+  LANGFUSE_TIMEOUT: "30"
+  ENV_FOR_DYNACONF: "kplus"
+  ENVVAR_PREFIX_FOR_DYNACONF: "false"
+  VAULT_ENABLED_FOR_DYNACONF: "true"
+  VAULT_URL_FOR_DYNACONF: "http://vault.vault.svc.cluster.local:8200"
+  VAULT_KV_VERSION_FOR_DYNACONF: "2"
+  LOG_RENDERER: "json"
+  LANGFUSE_USER_ID: "Gigant misli"
+  SETTINGS_FILES_FOR_DYNACONF: '["/app/backend/src/common/config/toml/*.toml"]'
+  S3_SERVICE_BASE_URL: "https://s3-service.gigalegal.ru/"
+  USE_PROXY: "false"
+  ROUTER_AI_BASE_URL: "https://routerai.ru/api/v1"
+  S3_SERVICE_META_PATH: "/s3/meta"
+  S3_SERVICE_UPLOAD_ANONYMIZED_FILE_PATH: "/s3/download/{file_id}/anonymized"
+
+
+livenessProbe: {}
+#  httpGet:
+#    path: /heart_bit
+#    port: 8891
+readinessProbe: {}
+#  httpGet:
+#    path: /heart_bit
+#    port: 8891

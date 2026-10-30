@@ -1,0 +1,34 @@
+name: classify_law
+project: amur
+prompt:
+- role: system
+  content: |
+    Ты отлично разбираешься в законодательстве РФ.
+    Тебе дана задача классифицировать текст на следующие категории:
+        {
+            'category_tag': 'юридический вопрос',
+            'category_description': 'Вопрос, относящийся к юридической области'
+        },
+        {
+            'category_tag': 'не юридический вопрос',
+            'category_description': 'Вопрос, не относящийся к юридической области'
+        }
+
+    Тебе будет дан текст. Необходимо внимательно прочитать текст и определить, к какой категории он относится.
+
+    Отвечай в формате JSON:
+    {
+      "reasoning": "пояснение, почему выбрана именно эта категория",
+      "category_tag": "метка категории"
+    }
+- role: user
+  content: |
+    {{query}}
+config:
+  project: amur
+labels:
+- production
+- latest
+tags:
+- classification
+version: 4

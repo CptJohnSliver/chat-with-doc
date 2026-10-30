@@ -1,0 +1,122 @@
+[project]
+name = "backend"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "dynaconf[vault]>=3.3.2",
+    "fastapi>=0.139.2",
+    "fastmcp>=3.0",
+    "httpx[socks]>=0.28.1",
+    "langfuse>=4.14.1",
+    "structlog>=26.1.0",
+    "tenacity>=9.1.4",
+    "uvicorn[standard]>=0.51.0",
+    "langgraph>=1.2.9",
+    "langchain-openai>=1.4.0",
+    "langchain>=1.3.14",
+    "numpy>=2.5.1",
+    "gigachat>=0.2.1",
+    "langchain-text-splitters>=1.1.2",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.15.22",
+    "mypy>=2.3.0",
+    "bandit>=1.9.4",
+    "pytest>=9.1.1",
+    "pre-commit>=4.6.1",
+    "pytest-asyncio>=1.4.0",
+]
+
+
+[tool.ruff]
+line-length = 130
+# Paths relative to this pyproject (backend/).
+src = ["src"]
+extend-exclude = [
+    "docs/",
+    "**/docs/**",
+    "**/*.ipynb",
+    "tests/",
+    "evals/",  # CLI-прогонщик замера: печатает отчёт в stdout, T20 тут не к месту
+    "expirements/",
+    "**/alembic/**",
+    ".venv/",
+]
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # Pyflakes
+    "I",   # isort
+    "N",   # pep8-naming
+    "UP",  # pyupgrade
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "PIE", # flake8-pie
+    "SIM", # flake8-simplify
+    "RUF", # Ruff-specific rules
+    "C90", # mccabe complexity
+    "T20", # flake8-print
+    "ERA", # eradicate (комменты с закомментированным кодом)
+    "PL",  # pylint-подмножество
+]
+ignore = [
+    "RUF001",
+    "RUF002",
+    "RUF003",
+    "N818",
+    "PLR0913",
+    "N811",
+    "ERA001",
+    "PLR2004",
+    "PLR0912",
+    "PLR0911",
+    "C901",
+    "B904",
+    "B008",
+]
+# Разрешаем автофикс для всех включённых правил (при --fix)
+fixable = ["ALL"]
+unfixable = []
+# Не ругаться на _префикс как на «неиспользуемую» переменную:
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.lint.isort]
+case-sensitive = true
+combine-as-imports = true
+known-first-party = ["src"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "lf"
+docstring-code-format = true
+docstring-code-line-length = "dynamic"
+
+[tool.ruff.lint.pylint]
+max-statements = 85
+
+[tool.mypy]
+plugins = ["pydantic.mypy"]
+# Relative to backend/ (run: `cd backend && mypy` or pre-commit with backend/src paths).
+files = ["src"]
+mypy_path = ["."]
+explicit_package_bases = true
+python_version = "3.13"
+ignore_missing_imports = true
+
+[tool.pydantic-mypy]
+init_typed = true
+warn_required_dynamic_aliases = false
+
+[tool.bandit]
+# Relative to backend/ when using `bandit -c pyproject.toml -r src`.
+# Pre-commit passes `-c backend/pyproject.toml -r backend/src` from repo root.
+exclude_dirs = ["tests", "docs", "expirements", ".venv"]
+skips = []
